@@ -80,6 +80,14 @@
     {{-- <script src="assets/js/slick.min.js"></script>
 <script src="assets/js/lightbox.min.js"></script> --}}
     <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                X-CSRF-TOKEN:$('meta[name = "csrf-token"]').attr('content')
+            }
+        });
+    </script>
+    @yield('customJs')
 </body>
 
 </html>
