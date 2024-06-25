@@ -47,72 +47,77 @@
 
 @section('customJs')
     <script>
+        // Attach a submit event listener to the registration form
         $('#regForm').submit(function(e) {
+            // Prevent the default form submission behavior
             e.preventDefault();
+
+            // Perform an AJAX POST request to submit the form data
             $.ajax({
-                url: '{{ route('account.reg.process') }}',
-                type: "post",
-                data: $('#regForm').serializeArray(),
-                dataType: 'json',
+                url: '{{ route('account.reg.process') }}', // URL to send the request to
+                type: "post", // HTTP method
+                data: $('#regForm').serializeArray(), // Serialize form data for submission
+                dataType: 'json', // Expected response data type
+
+                // Callback function to handle a successful response
                 success: function(response) {
+                    // If validation fails, handle errors
                     if (response.status == false) {
                         var errors = response.errors;
+
+                        // Handle name field errors
                         if (errors.name) {
                             $("#name").addClass('is-invalid').siblings('p').addClass('invalid-feedback')
-                                .html(errors.name)
-
+                                .html(errors.name);
                         } else {
-                            $('#name').removeClass('is-invalid').siblings('p').removeClass(
-                                    'invalid-feedback')
-                                .html('')
+                            $('#name').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                                .html('');
                         }
+
+                        // Handle email field errors
                         if (errors.email) {
-                            $("#email").addClass('is-invalid').siblings('p').addClass(
-                                    'invalid-feedback')
-                                .html(errors.email)
-
+                            $("#email").addClass('is-invalid').siblings('p').addClass('invalid-feedback')
+                                .html(errors.email);
                         } else {
-                            $('#email').removeClass('is-invalid').siblings('p').removeClass(
-                                    'invalid-feedback')
-                                .html('')
+                            $('#email').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                                .html('');
                         }
+
+                        // Handle password field errors
                         if (errors.password) {
-                            $("#password").addClass('is-invalid').siblings('p').addClass(
-                                    'invalid-feedback')
-                                .html(errors.password)
-
+                            $("#password").addClass('is-invalid').siblings('p').addClass('invalid-feedback')
+                                .html(errors.password);
                         } else {
-                            $('#password').removeClass('is-invalid').siblings('p').removeClass(
-                                    'invalid-feedback')
-                                .html('')
+                            $('#password').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                                .html('');
                         }
-                        if (errors.confirm_password) {
-                            $("#confirm_password").addClass('is-invalid').siblings('p').addClass(
-                                    'invalid-feedback')
-                                .html(errors.confirm_password)
 
+                        // Handle confirm_password field errors
+                        if (errors.confirm_password) {
+                            $("#confirm_password").addClass('is-invalid').siblings('p').addClass('invalid-feedback')
+                                .html(errors.confirm_password);
                         } else {
-                            $('#confirm_password').removeClass('is-invalid').siblings('p').removeClass(
-                                    'invalid-feedback')
-                                .html('')
+                            $('#confirm_password').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                                .html('');
                         }
 
                     } else {
-                        $('#name').removeClass('is-invalid').siblings('p').removeClass(
-                                'invalid-feedback')
-                            .html('')
-                        $('#email').removeClass('is-invalid').siblings('p').removeClass(
-                                'invalid-feedback')
-                            .html('')
-                        $('#password').removeClass('is-invalid').siblings('p').removeClass(
-                                'invalid-feedback')
-                            .html('')
-                        $('#confirm_password').removeClass('is-invalid').siblings('p').removeClass(
-                                'invalid-feedback')
-                            .html('')
+                        // If validation passes, clear any previous errors
+                        $('#name').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                            .html('');
+                        $('#email').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                            .html('');
+                        $('#password').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                            .html('');
+                        $('#confirm_password').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback')
+                            .html('');
+
+                        // Redirect to the login page upon successful registration
+                        window.location.href = "{{ route('account.login') }}";
                     }
                 }
             });
         });
     </script>
 @endsection
+
