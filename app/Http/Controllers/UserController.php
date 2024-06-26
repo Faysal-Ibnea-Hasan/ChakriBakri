@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Session;
 use Validator;
 use Hash;
+use Auth;
 
 class UserController extends Controller
 {
@@ -74,6 +75,35 @@ class UserController extends Controller
     public function userLogin()
     {
         return view('front.account.login');
+    }
+
+    public function userAuth(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+        if ($validator->passes()) {
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                return redirect()->route('account.profile');
+            } else {
+                return redirect()->route('account.login')->with('error','Email or Password is incorrect!');
+            }
+
+        } else {
+            return redirect()->route('account.login')
+                ->withErrors($validator)
+                ->withInput($request->only('email'));
+        }
+    }
+
+    public function userProfile(){
+        return view('front.account.profile');
+    }
+
+    public function userLogout(){
+        Auth::logout();
+        return redirect()->route('account.login')->with('logout','You have been logged out!');
     }
 }
 
