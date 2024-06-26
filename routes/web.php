@@ -28,6 +28,7 @@ Route::group(['account'], function () {
     //Auth routes
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/account/profile', [UserController::class, 'userProfile'])->name('account.profile');
+        Route::put('/account/update/profile', [UserController::class, 'userProfileUpdate'])->name('account.profile.update');
         Route::get('/account/logout', [UserController::class, 'userLogout'])->name('account.logout');
     });
 });

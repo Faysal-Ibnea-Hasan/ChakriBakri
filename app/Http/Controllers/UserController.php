@@ -116,7 +116,12 @@ class UserController extends Controller
      */
     public function userProfile()
     {
-        return view('front.account.profile');
+        $id = Auth::user()->id;
+        $user = User::where('id',$id)->first();
+
+        return view('front.account.profile',[
+            'user' => $user
+        ]);
     }
 
     /**
@@ -131,6 +136,34 @@ class UserController extends Controller
 
         // Redirect to the login page with a logout message
         return redirect()->route('account.login')->with('logout', 'You have been logged out!');
+    }
+
+    public function userProfileUpdate(Request $request){
+        $id = Auth::user()->id;
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|min:5',
+            'email' => 'required|email|unique:users,email,'.$id.',id'
+        ]);
+        if ($validator->passes()) {
+            $user = User::find($id);
+
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->designation = $request->designation;
+            $user->mobile = $request->mobile;
+            $user->save();
+            Session::flash('success', 'User profile updated');
+            return response()->json([
+                'status' => true,
+
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+
     }
 
 }
