@@ -77,33 +77,61 @@ class UserController extends Controller
         return view('front.account.login');
     }
 
+   /**
+     * Authenticate the user based on provided credentials.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function userAuth(Request $request)
     {
+        // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required'
         ]);
+
+        // Check if the validation passes
         if ($validator->passes()) {
+            // Attempt to log the user in with the provided credentials
             if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                // Redirect to the user profile page if authentication is successful
                 return redirect()->route('account.profile');
             } else {
-                return redirect()->route('account.login')->with('error','Email or Password is incorrect!');
+                // Redirect back to the login page with an error message if authentication fails
+                return redirect()->route('account.login')->with('error', 'Email or Password is incorrect!');
             }
-
         } else {
+            // Redirect back to the login page with validation errors and the input email
             return redirect()->route('account.login')
                 ->withErrors($validator)
                 ->withInput($request->only('email'));
         }
     }
 
-    public function userProfile(){
+    /**
+     * Display the user's profile page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function userProfile()
+    {
         return view('front.account.profile');
     }
 
-    public function userLogout(){
+    /**
+     * Log the user out and redirect to the login page.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function userLogout()
+    {
+        // Log the user out
         Auth::logout();
-        return redirect()->route('account.login')->with('logout','You have been logged out!');
+
+        // Redirect to the login page with a logout message
+        return redirect()->route('account.login')->with('logout', 'You have been logged out!');
     }
+
 }
 

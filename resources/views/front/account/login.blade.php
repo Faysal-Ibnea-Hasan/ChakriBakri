@@ -5,20 +5,26 @@
         <div class="container my-5">
             <div class="py-lg-2">&nbsp;</div>
             @if (Session::has('success'))
+                <!-- Display success message if it exists in the session -->
                 <div class="alert alert-success">
                     <p>{{ Session::get('success') }}</p>
                 </div>
             @endif
+
             @if (Session::has('error'))
+                <!-- Display error message if it exists in the session -->
                 <div class="alert alert-danger">
                     <p>{{ Session::get('error') }}</p>
                 </div>
             @endif
+
             @if (Session::has('logout'))
+                <!-- Display logout message if it exists in the session -->
                 <div class="alert alert-danger">
                     <p>{{ Session::get('logout') }}</p>
                 </div>
             @endif
+
             <div class="row d-flex justify-content-center">
                 <div class="col-md-5">
                     <div class="card shadow border-0 p-5">
@@ -27,7 +33,7 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="" class="mb-2">Email*</label>
-                                <input type="text" value="{{old('email')}}" name="email" id="email"
+                                <input type="text" value="{{ old('email') }}" name="email" id="email"
                                     class="form-control @error('email') is-invalid @enderror"
                                     placeholder="example@example.com">
                                 @error('email')
@@ -36,9 +42,10 @@
                             </div>
                             <div class="mb-3">
                                 <label for="" class="mb-2">Password*</label>
-                                <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror"
+                                <input type="password" name="password" id="password"
+                                    class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Enter Password">
-                                    @error('password')
+                                @error('password')
                                     <p class="invalid-feedback">{{ $message }}</p>
                                 @enderror
                             </div>
