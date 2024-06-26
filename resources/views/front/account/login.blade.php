@@ -20,16 +20,16 @@
                         </div>
                         <div class="mb-3">
                             <label for="" class="mb-2">Password*</label>
-                            <input type="password" name="name" id="name" class="form-control" placeholder="Enter Password">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password">
                         </div>
                         <div class="justify-content-between d-flex">
-                        <button class="btn btn-primary mt-2">Login</button>
+                        <button class="btn btn-primary mt-2" >Login</button>
                             <a href="forgot-password.html" class="mt-3">Forgot Password?</a>
                         </div>
                     </form>
                 </div>
                 <div class="mt-4 text-center">
-                    <p>Do not have an account? <a  href="register.html">Register</a></p>
+                    <p>Do not have an account? <a  href="{{route('account.reg')}}">Register</a></p>
                 </div>
             </div>
         </div>
