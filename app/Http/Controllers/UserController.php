@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Session;
 use Validator;
 use Hash;
 use Auth;
+use File;
 
 class UserController extends Controller
 {
@@ -138,60 +141,100 @@ class UserController extends Controller
         return redirect()->route('account.login')->with('logout', 'You have been logged out!');
     }
 
+    // Function to update the user's profile information
     public function userProfileUpdate(Request $request)
     {
+        // Get the authenticated user's ID
         $id = Auth::user()->id;
+
+        // Validate the incoming request data
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:5',
-            'email' => 'required|email|unique:users,email,' . $id . ',id'
+            'name' => 'required|min:5', // Name is required and should have a minimum length of 5 characters
+            'email' => 'required|email|unique:users,email,' . $id . ',id' // Email is required, should be a valid email format, and must be unique in the users table, excluding the current user's email
         ]);
+
+        // Check if validation passes
         if ($validator->passes()) {
+            // Find the user by ID
             $user = User::find($id);
 
+            // Update the user's profile with the request data
             $user->name = $request->name;
             $user->email = $request->email;
             $user->designation = $request->designation;
             $user->mobile = $request->mobile;
-            $user->save();
+            $user->save(); // Save the updated user information
+
+            // Flash success message to the session
             Session::flash('success', 'User profile updated');
+
+            // Return a JSON response indicating success
             return response()->json([
                 'status' => true,
-
             ]);
         } else {
+            // Return a JSON response indicating failure with validation errors
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()
             ]);
         }
-
     }
 
+
+    // Function to update the user's profile picture
     public function updateProfilePic(Request $request)
     {
-        // dd($request->all());
+        // Get the authenticated user's ID
         $id = Auth::user()->id;
-        $validator = Validator::make($request->all(), [
-            'image' => 'required|image'
-        ]);
-        if ($validator->passes()) {
-            $image = $request->image;
-            $ext = $image->getClientOriginalExtension();
-            $imageName = $id . '-' . time() . '.' . $ext;
-            $image->move(public_path('/profile_pic/'), $imageName);
 
+        // Validate the incoming request data for the image
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image' // Image is required and should be of image type
+        ]);
+
+        // Check if validation passes
+        if ($validator->passes()) {
+            // Get the image from the request
+            $image = $request->image;
+            // Get the original extension of the image
+            $ext = $image->getClientOriginalExtension();
+            // Create a new image name using the user's ID and current timestamp
+            $imageName = $id . '-' . time() . '.' . $ext;
+            // Move the image to the profile_pic directory
+            $image->move(public_path('/profile_pic/'), $imageName);
+            // Define the source path of the uploaded image
+            $sourcePath = public_path('/profile_pic/' . $imageName);
+
+            // Create a new image instance using the ImageManager
+            $manager = new ImageManager(Driver::class);
+            $image = $manager->read($sourcePath);
+
+            // Crop and resize the image to 150x150 pixels
+            $image->cover(150, 150);
+            // Save the cropped and resized image as a PNG in the thumb directory
+            $image->toPng()->save(public_path('/profile_pic/thumb/' . $imageName));
+
+            // Delete the old profile picture and its thumbnail if they exist
+            File::delete(public_path('/profile_pic/' . Auth::user()->image));
+            File::delete(public_path('/profile_pic/thumb/' . Auth::user()->image));
+
+            // Update the user's profile picture in the database
             User::where('id', $id)->update(['image' => $imageName]);
-            Session::flash('success','Profile picture updated successfully!');
+
+            // Flash success message to the session
+            Session::flash('success', 'Profile picture updated successfully!');
+
+            // Return a JSON response indicating success
             return response()->json([
                 'status' => true,
             ]);
         } else {
+            // Return a JSON response indicating failure with validation errors
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()
             ]);
         }
     }
-
 }
-
