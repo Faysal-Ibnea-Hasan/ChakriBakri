@@ -67,13 +67,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="ProfilePicForm" name="ProfilePicForm" method="POST" action="">
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Profile Image</label>
                             <input type="file" class="form-control" id="image" name="image">
+                            <p class="text-danger" id="image-error"></p>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-primary mx-3">Update</button>
+                            <button type="submit" class="btn btn-primary mx-3">Update</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
 
@@ -101,6 +102,29 @@
                 'X-CSRF-TOKEN': $('meta[name ="csrf-token"]').attr('content')
             }
         });
+        $('#ProfilePicForm').submit(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{{ route('account.profile-pic.update') }}",
+                type: 'post',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == false) {
+                        var error = response.errors;
+                        if (error.image) {
+                            $('#image-error').html(error.image);
+                        }
+                    } else {
+                        window.location.href = "{{ url()->current() }}";
+                    }
+                }
+            })
+        })
     </script>
     @yield('customJs')
 </body>

@@ -77,7 +77,7 @@ class UserController extends Controller
         return view('front.account.login');
     }
 
-   /**
+    /**
      * Authenticate the user based on provided credentials.
      *
      * @param \Illuminate\Http\Request $request
@@ -117,9 +117,9 @@ class UserController extends Controller
     public function userProfile()
     {
         $id = Auth::user()->id;
-        $user = User::where('id',$id)->first();
+        $user = User::where('id', $id)->first();
 
-        return view('front.account.profile',[
+        return view('front.account.profile', [
             'user' => $user
         ]);
     }
@@ -138,11 +138,12 @@ class UserController extends Controller
         return redirect()->route('account.login')->with('logout', 'You have been logged out!');
     }
 
-    public function userProfileUpdate(Request $request){
+    public function userProfileUpdate(Request $request)
+    {
         $id = Auth::user()->id;
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required|min:5',
-            'email' => 'required|email|unique:users,email,'.$id.',id'
+            'email' => 'required|email|unique:users,email,' . $id . ',id'
         ]);
         if ($validator->passes()) {
             $user = User::find($id);
@@ -164,6 +165,32 @@ class UserController extends Controller
             ]);
         }
 
+    }
+
+    public function updateProfilePic(Request $request)
+    {
+        // dd($request->all());
+        $id = Auth::user()->id;
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image'
+        ]);
+        if ($validator->passes()) {
+            $image = $request->image;
+            $ext = $image->getClientOriginalExtension();
+            $imageName = $id . '-' . time() . '.' . $ext;
+            $image->move(public_path('/profile_pic/'), $imageName);
+
+            User::where('id', $id)->update(['image' => $imageName]);
+            Session::flash('success','Profile picture updated successfully!');
+            return response()->json([
+                'status' => true,
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
     }
 
 }
