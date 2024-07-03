@@ -29,6 +29,8 @@ Route::group(['account'], function () {
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/account/profile', [UserController::class, 'userProfile'])->name('account.profile');
         Route::put('/account/update/profile', [UserController::class, 'userProfileUpdate'])->name('account.profile.update');
+        Route::get('/account/create_job', [UserController::class, 'createJob'])->name('account.create.job');
+        Route::post('/account/save_job', [UserController::class, 'saveJob'])->name('account.save.job');
         Route::post('/account/update/profile-pic', [UserController::class, 'updateProfilePic'])->name('account.profile-pic.update');
         Route::get('/account/logout', [UserController::class, 'userLogout'])->name('account.logout');
     });

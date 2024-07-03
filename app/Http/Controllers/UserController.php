@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Catagory;
+use App\Models\JobType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
@@ -231,6 +233,35 @@ class UserController extends Controller
             ]);
         } else {
             // Return a JSON response indicating failure with validation errors
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+    }
+
+    public function createJob(){
+        $catagories= Catagory::orderBy('name', 'ASC')->where('status',1)->get();
+        $jobTypes = JobType::orderBy('name', 'ASC')->where('status',1)->get();
+        return view('front.job_s.create_job',[
+            'catagories' => $catagories,
+            'jobTypes' => $jobTypes
+        ]);
+    }
+    public function saveJob(Request $request){
+        $rules=[
+            'title' => 'required',
+            'catagory_id' => 'required',
+            'job_type_id' => 'required',
+            'vacancy' => 'required|integer',
+            'location' => 'required',
+            'description' => 'required',
+            'company_name' => 'required',
+        ];
+        $validator = Validator::make($request->all(),$rules);
+        if ($validator->passes()) {
+
+        } else {
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()
