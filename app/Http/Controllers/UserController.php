@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Catagory;
+use App\Models\Job;
 use App\Models\JobType;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -260,12 +261,37 @@ class UserController extends Controller
         ];
         $validator = Validator::make($request->all(),$rules);
         if ($validator->passes()) {
+            $job = new Job();
+            $job->title = $request->title;
+            $job->catagory_id = $request->catagory_id;
+            $job->job_type_id = $request->job_type_id;
+            $job->vacancy = $request->vacancy;
+            $job->salary = $request->salary;
+            $job->location = $request->location;
+            $job->description = $request->description;
+            $job->benefits = $request->benefits;
+            $job->responsibility = $request->responsibility;
+            $job->qualification = $request->qualification;
+            $job->keywords= $request->keywords;
+            $job->experience = $request->experience;
+            $job->company_name = $request->company_name;
+            $job->company_location = $request->company_location;
+            $job->company_website = $request->company_website;
+            $job->save();
+            Session::flash('success','Job added successfully!');
+            return response()->json([
+                'status' => true,
 
+            ]);
         } else {
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()
             ]);
         }
+    }
+
+    public function myJob(){
+        return view('front.job_s.my_job');
     }
 }

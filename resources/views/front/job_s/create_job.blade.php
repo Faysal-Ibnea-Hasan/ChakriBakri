@@ -24,6 +24,7 @@
                     @include('front.account.sidebar')
                 </div>
                 <div class="col-lg-9">
+
                     <div class="col-lg-9">
                         <form action="" id="postJob" name="postJob" method="POST">
                             <div class="card border-0 shadow mb-4 ">
@@ -34,6 +35,7 @@
                                             <label for="" class="mb-2">Title<span class="req">*</span></label>
                                             <input type="text" placeholder="Job Title" id="title" name="title"
                                                 class="form-control">
+                                            <p></p>
                                         </div>
                                         <div class="col-md-6  mb-4">
                                             <label for="" class="mb-2">Category<span
@@ -46,6 +48,7 @@
                                                     @endforeach
                                                 @endif
                                             </select>
+                                            <p></p>
                                         </div>
                                     </div>
 
@@ -61,12 +64,14 @@
                                                     @endforeach
                                                 @endif
                                             </select>
+                                            <p></p>
                                         </div>
                                         <div class="col-md-6  mb-4">
                                             <label for="" class="mb-2">Vacancy<span
                                                     class="req">*</span></label>
                                             <input type="number" min="1" placeholder="Vacancy" id="vacancy"
                                                 name="vacancy" class="form-control">
+                                            <p></p>
                                         </div>
                                     </div>
 
@@ -91,12 +96,14 @@
                                                 <option value="9 years">9 years</option>
                                                 <option value="10+ years">10+ years</option>
                                             </select>
+
                                         </div>
                                         <div class="mb-4 col-md-6">
                                             <label for="" class="mb-2">Location<span
                                                     class="req">*</span></label>
                                             <input type="text" placeholder="location" id="location" name="location"
                                                 class="form-control">
+                                            <p></p>
                                         </div>
                                     </div>
 
@@ -105,6 +112,7 @@
                                                 class="req">*</span></label>
                                         <textarea class="form-control" name="description" id="description" cols="5" rows="5"
                                             placeholder="Description"></textarea>
+                                        <p></p>
                                     </div>
                                     <div class="mb-4">
                                         <label for="" class="mb-2">Benefits</label>
@@ -139,6 +147,7 @@
                                                     class="req">*</span></label>
                                             <input type="text" placeholder="Company Name" id="company_name"
                                                 name="company_name" class="form-control">
+                                            <p></p>
                                         </div>
 
                                         <div class="mb-4 col-md-6">
@@ -175,37 +184,98 @@
                 dataType: 'json',
                 data: $("#postJob").serializeArray(),
                 success: function(response) {
-                    // if (response.status == true) {
-                    //     $('#name').removeClass('is-invalid').siblings('p').removeClass(
-                    //             'invalid-feedback')
-                    //         .html('');
-                    //     $('#email').removeClass('is-invalid').siblings('p').removeClass(
-                    //             'invalid-feedback')
-                    //         .html('');
-                    //     window.location.href = "{{ route('account.profile') }}";
-                    // } else {
-                    //     var errors = response.errors;
-                    //     // Handle name field errors
-                    //     if (errors.name) {
-                    //         $("#name").addClass('is-invalid').siblings('p').addClass('invalid-feedback')
-                    //             .html(errors.name);
-                    //     } else {
-                    //         $('#name').removeClass('is-invalid').siblings('p').removeClass(
-                    //                 'invalid-feedback')
-                    //             .html('');
-                    //     }
+                    if (response.status == true) {
+                        $('#title').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                        $('#catagory_id').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                        $('#job_type_id').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                        $('#vacancy').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                        $('#location').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                        $('#description').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                        $('#company_name').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                        window.location.href = "{{ route('account.my.job') }}";
+                    } else {
+                        var errors = response.errors;
 
-                    //     // Handle email field errors
-                    //     if (errors.email) {
-                    //         $("#email").addClass('is-invalid').siblings('p').addClass(
-                    //                 'invalid-feedback')
-                    //             .html(errors.email);
-                    //     } else {
-                    //         $('#email').removeClass('is-invalid').siblings('p').removeClass(
-                    //                 'invalid-feedback')
-                    //             .html('');
-                    //     }
-                    // }
+                        if (errors.title) {
+                            $("#title").addClass('is-invalid').siblings('p').addClass(
+                                    'invalid-feedback')
+                                .html(errors.title);
+                        } else {
+                            $('#catagory_id').removeClass('is-invalid').siblings('p').removeClass(
+                                    'invalid-feedback')
+                                .html('');
+                        }
+
+
+                        if (errors.catagory_id) {
+                            $("#catagory_id").addClass('is-invalid').siblings('p').addClass(
+                                    'invalid-feedback')
+                                .html(errors.catagory_id);
+                        } else {
+                            $('#catagory_id').removeClass('is-invalid').siblings('p').removeClass(
+                                    'invalid-feedback')
+                                .html('');
+                        }
+                        if (errors.job_type_id) {
+                            $("#job_type_id").addClass('is-invalid').siblings('p').addClass(
+                                    'invalid-feedback')
+                                .html(errors.job_type_id);
+                        } else {
+                            $('#job_type_id').removeClass('is-invalid').siblings('p').removeClass(
+                                    'invalid-feedback')
+                                .html('');
+                        }
+                        if (errors.vacancy) {
+                            $("#vacancy").addClass('is-invalid').siblings('p').addClass(
+                                    'invalid-feedback')
+                                .html(errors.vacancy);
+                        } else {
+                            $('#vacancy').removeClass('is-invalid').siblings('p').removeClass(
+                                    'invalid-feedback')
+                                .html('');
+                        }
+                        if (errors.location) {
+                            $("#location").addClass('is-invalid').siblings('p').addClass(
+                                    'invalid-feedback')
+                                .html(errors.location);
+                        } else {
+                            $('#location').removeClass('is-invalid').siblings('p').removeClass(
+                                    'invalid-feedback')
+                                .html('');
+                        }
+                        if (errors.description) {
+                            $("#description").addClass('is-invalid').siblings('p').addClass(
+                                    'invalid-feedback')
+                                .html(errors.description);
+                        } else {
+                            $('#description').removeClass('is-invalid').siblings('p').removeClass(
+                                    'invalid-feedback')
+                                .html('');
+                        }
+                        if (errors.company_name) {
+                            $("#company_name").addClass('is-invalid').siblings('p').addClass(
+                                    'invalid-feedback')
+                                .html(errors.company_name);
+                        } else {
+                            $('#company_name').removeClass('is-invalid').siblings('p').removeClass(
+                                    'invalid-feedback')
+                                .html('');
+                        }
+                    }
                 }
             })
         });
