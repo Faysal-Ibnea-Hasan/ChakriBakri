@@ -48,7 +48,7 @@
                     @endif
 
                     <!-- Display button to post a job, accessible to all users -->
-                    <a class="btn btn-primary" href="post-job.html" type="submit">Post a Job</a>
+                    <a class="btn btn-primary" href="{{route('account.create.job')}}" type="submit">Post a Job</a>
 
 
                 </div>

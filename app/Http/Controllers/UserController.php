@@ -241,16 +241,36 @@ class UserController extends Controller
         }
     }
 
-    public function createJob(){
-        $catagories= Catagory::orderBy('name', 'ASC')->where('status',1)->get();
-        $jobTypes = JobType::orderBy('name', 'ASC')->where('status',1)->get();
-        return view('front.job_s.create_job',[
+    /**
+     * Display the create job form with categories and job types.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function createJob()
+    {
+        // Retrieve active categories sorted by name in ascending order
+        $catagories = Catagory::orderBy('name', 'ASC')->where('status', 1)->get();
+
+        // Retrieve active job types sorted by name in ascending order
+        $jobTypes = JobType::orderBy('name', 'ASC')->where('status', 1)->get();
+
+        // Return the view with categories and job types
+        return view('front.job_s.create_job', [
             'catagories' => $catagories,
             'jobTypes' => $jobTypes
         ]);
     }
-    public function saveJob(Request $request){
-        $rules=[
+
+    /**
+     * Save a new job post to the database.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function saveJob(Request $request)
+    {
+        // Define validation rules for job creation
+        $rules = [
             'title' => 'required',
             'catagory_id' => 'required',
             'job_type_id' => 'required',
@@ -259,12 +279,18 @@ class UserController extends Controller
             'description' => 'required',
             'company_name' => 'required',
         ];
-        $validator = Validator::make($request->all(),$rules);
+
+        // Validate the request data against the rules
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if the validation passes
         if ($validator->passes()) {
+            // Create a new job instance and populate it with request data
             $job = new Job();
             $job->title = $request->title;
             $job->catagory_id = $request->catagory_id;
             $job->job_type_id = $request->job_type_id;
+            $job->user_id = Auth::user()->id;
             $job->vacancy = $request->vacancy;
             $job->salary = $request->salary;
             $job->location = $request->location;
@@ -272,18 +298,24 @@ class UserController extends Controller
             $job->benefits = $request->benefits;
             $job->responsibility = $request->responsibility;
             $job->qualification = $request->qualification;
-            $job->keywords= $request->keywords;
+            $job->keywords = $request->keywords;
             $job->experience = $request->experience;
             $job->company_name = $request->company_name;
             $job->company_location = $request->company_location;
             $job->company_website = $request->company_website;
+
+            // Save the job to the database
             $job->save();
-            Session::flash('success','Job added successfully!');
+
+            // Flash success message to the session
+            Session::flash('success', 'Job added successfully!');
+
+            // Return a JSON response indicating success
             return response()->json([
                 'status' => true,
-
             ]);
         } else {
+            // Return a JSON response indicating validation errors
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()
@@ -291,7 +323,19 @@ class UserController extends Controller
         }
     }
 
-    public function myJob(){
-        return view('front.job_s.my_job');
+    /**
+     * Display the logged-in user's job posts.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function myJob()
+    {
+        // Retrieve the logged-in user's job posts with associated job types, paginated by 5
+        $jobs = Job::where('user_id', Auth::user()->id)->with('jobType')->paginate(5);
+
+        // Return the view with the user's job posts
+        return view('front.job_s.my_job', [
+            'jobs' => $jobs
+        ]);
     }
 }
