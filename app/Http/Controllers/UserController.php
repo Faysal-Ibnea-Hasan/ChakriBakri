@@ -338,4 +338,83 @@ class UserController extends Controller
             'jobs' => $jobs
         ]);
     }
+
+    public function editJob(Request $request, $id){
+        //dd($id);
+        // Retrieve active categories sorted by name in ascending order
+        $catagories = Catagory::orderBy('name', 'ASC')->where('status', 1)->get();
+
+        // Retrieve active job types sorted by name in ascending order
+        $jobTypes = JobType::orderBy('name', 'ASC')->where('status', 1)->get();
+
+        $jobs = Job::where([
+            'user_id'=> Auth::user()->id,
+            'id' => $id,
+        ])->first();
+        if($jobs==null){
+            abort(404);
+        }
+
+        return view('front.job_s.edit_job',[
+            'catagories' => $catagories,
+            'jobTypes' => $jobTypes,
+            'jobs'=>$jobs
+        ]);
+    }
+
+    public function updateJob(Request $request,$id)
+    {
+        // Define validation rules for job creation
+        $rules = [
+            'title' => 'required',
+            'catagory_id' => 'required',
+            'job_type_id' => 'required',
+            'vacancy' => 'required|integer',
+            'location' => 'required',
+            'description' => 'required',
+            'company_name' => 'required',
+        ];
+
+        // Validate the request data against the rules
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if the validation passes
+        if ($validator->passes()) {
+            // Create a new job instance and populate it with request data
+            $job = Job::find($id);
+            $job->title = $request->title;
+            $job->catagory_id = $request->catagory_id;
+            $job->job_type_id = $request->job_type_id;
+            $job->user_id = Auth::user()->id;
+            $job->vacancy = $request->vacancy;
+            $job->salary = $request->salary;
+            $job->location = $request->location;
+            $job->description = $request->description;
+            $job->benefits = $request->benefits;
+            $job->responsibility = $request->responsibility;
+            $job->qualification = $request->qualification;
+            $job->keywords = $request->keywords;
+            $job->experience = $request->experience;
+            $job->company_name = $request->company_name;
+            $job->company_location = $request->company_location;
+            $job->company_website = $request->company_website;
+
+            // Save the job to the database
+            $job->save();
+
+            // Flash success message to the session
+            Session::flash('success', 'Job updated successfully!');
+
+            // Return a JSON response indicating success
+            return response()->json([
+                'status' => true,
+            ]);
+        } else {
+            // Return a JSON response indicating validation errors
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+    }
 }
