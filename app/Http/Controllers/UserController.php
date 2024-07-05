@@ -339,7 +339,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function editJob(Request $request, $id){
+    public function editJob(Request $request, $id)
+    {
         //dd($id);
         // Retrieve active categories sorted by name in ascending order
         $catagories = Catagory::orderBy('name', 'ASC')->where('status', 1)->get();
@@ -348,21 +349,21 @@ class UserController extends Controller
         $jobTypes = JobType::orderBy('name', 'ASC')->where('status', 1)->get();
 
         $jobs = Job::where([
-            'user_id'=> Auth::user()->id,
+            'user_id' => Auth::user()->id,
             'id' => $id,
         ])->first();
-        if($jobs==null){
+        if ($jobs == null) {
             abort(404);
         }
 
-        return view('front.job_s.edit_job',[
+        return view('front.job_s.edit_job', [
             'catagories' => $catagories,
             'jobTypes' => $jobTypes,
-            'jobs'=>$jobs
+            'jobs' => $jobs
         ]);
     }
 
-    public function updateJob(Request $request,$id)
+    public function updateJob(Request $request, $id)
     {
         // Define validation rules for job creation
         $rules = [
@@ -416,5 +417,25 @@ class UserController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
+    }
+
+    public function deleteJob(Request $request)
+    {
+        $job = Job::where([
+            'user_id' => Auth::user()->id,
+            'id' => $request->jobId
+        ])->first();
+        if ($job == null) {
+            Session::flash('error','An error occured!');
+            return response()->json([
+                'status'=>true
+            ]);
+        }
+
+        Job::where('id',$request->jobId)->delete();
+        Session::flash('success','Job deleted successfully!');
+        return response()->json([
+            'status' => true
+        ]);
     }
 }
