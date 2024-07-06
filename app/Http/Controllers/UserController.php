@@ -331,7 +331,7 @@ class UserController extends Controller
     public function myJob()
     {
         // Retrieve the logged-in user's job posts with associated job types, paginated by 5
-        $jobs = Job::where('user_id', Auth::user()->id)->with('jobType')->paginate(5);
+        $jobs = Job::where('user_id', Auth::user()->id)->with('jobType')->orderBy('created_at','DESC')->paginate(5);
 
         // Return the view with the user's job posts
         return view('front.job_s.my_job', [
