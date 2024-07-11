@@ -16,7 +16,7 @@ class JobController extends Controller
         $catagories = Catagory::where('status', 1)->orderBy('name', 'ASC')->get();
         // Retrieve the active jobTypes sorted by name in ascending order
         $jobTypes = JobType::where('status', 1)->orderBy('name', 'ASC')->get();
-        // Retrieve the  latest jobs with their job types, sorted by creation date in descending order
+        // Retrieve the  latest jobs with their job types, sorted by creation date in descending order lol
         $letestJobs = Job::where('status', 1)->with('jobType')->orderBy('created_at', 'DESC')->paginate(9);
         return view('front.job_s.all_job', [
             'catagories' => $catagories,
