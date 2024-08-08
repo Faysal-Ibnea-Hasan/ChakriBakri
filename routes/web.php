@@ -18,6 +18,7 @@ Route::get('/all-jobs', [JobController::class, 'index'])->name('all.jobs');
 
 
 
+
 Route::group(['account'], function () {
     //Guest routes
     Route::group(['middleware' => 'guest'], function () {
