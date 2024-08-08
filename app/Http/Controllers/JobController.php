@@ -44,12 +44,20 @@ class JobController extends Controller
         if (!empty($request->experience)) {
             $filteredJobs = $jobs->where('experience', $request->experience);
         }
-        $letestJobs = $jobs->with('jobType')->orderBy('created_at', 'DESC')->paginate(9);
+        $jobs = $jobs->with('jobType');
+        if ($request->sort == 'oldest') {
+            $jobs = $jobs->orderBy('created_at', 'ASC');
+        } else if ($request->sort == 'latest') {
+            $jobs = $jobs->orderBy('created_at', 'DESC');
+        }
+        $jobs = $jobs->paginate(9);
+
+        //$latestJobs = $jobs->orderBy('created_at', 'DESC');
         //dd($letestJobs);
         return view('front.job_s.all_job', [
             'catagories' => $catagories,
             'jobTypes' => $jobTypes,
-            'letestJobs' => $letestJobs,
+            'jobs' => $jobs,
             'jobTypeArray' => $jobTypeArray
         ]);
     }

@@ -9,8 +9,8 @@
                 <div class="col-6 col-md-2">
                     <div class="align-end">
                         <select name="sort" id="sort" class="form-control">
-                            <option value="">Latest</option>
-                            <option value="">Oldest</option>
+                            <option value="latest"{{ Request::get('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
+                            <option value="oldest"{{ Request::get('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
                         </select>
                     </div>
                 </div>
@@ -91,6 +91,7 @@
                                 </select>
                             </div>
                             <button class="btn btn-primary" type="submit">Search</button>
+                            <a class="btn btn-secondary mt-3" href="{{route('all.jobs')}}">Reset Filters</a>
                         </div>
                     </form>
                 </div>
@@ -98,8 +99,8 @@
                     <div class="job_listing_area">
                         <div class="job_lists">
                             <div class="row">
-                                @if ($letestJobs->isNotEmpty())
-                                    @foreach ($letestJobs as $letestJob)
+                                @if ($jobs->isNotEmpty())
+                                    @foreach ($jobs as $letestJob)
                                         <div class="col-md-4">
                                             <div class="card border-0 p-3 shadow mb-4">
                                                 <div class="card-body">
@@ -156,7 +157,7 @@
             var keywords = $('#keywords').val();
             var location = $('#location').val();
             var catagory = $('#catagory').val();
-
+            var sort = $('#sort').val();
             var experience = $('#experience').val();
             var jobType = $("input:checkbox[name='job_type']:checked").map(function() {
                 return $(this).val();
@@ -178,8 +179,11 @@
             if (jobType.length > 0) {
                 url += '&jobType=' + jobType;
             }
-
+            url += '&sort=' + sort;
             window.location.href = url;
         });
+        $("#sort").change(function() {
+            $("#searchForm").submit();
+        })
     </script>
 @endsection
