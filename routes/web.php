@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/all-jobs', [JobController::class, 'index'])->name('all.jobs');
+Route::get('/all-jobs/details/{id}', [JobController::class, 'jobDetails'])->name('all.jobs.details');
+Route::post('/all-jobs/details/apply', [JobController::class, 'applyJob'])->name('all.jobs.apply');
 
 
 

@@ -91,7 +91,7 @@
                                 </select>
                             </div>
                             <button class="btn btn-primary" type="submit">Search</button>
-                            <a class="btn btn-secondary mt-3" href="{{route('all.jobs')}}">Reset Filters</a>
+                            <a class="btn btn-secondary mt-3" href="{{ route('all.jobs') }}">Reset Filters</a>
                         </div>
                     </form>
                 </div>
@@ -130,7 +130,8 @@
                                                     </div>
 
                                                     <div class="d-grid mt-3">
-                                                        <a href="job-detail.html" class="btn btn-primary btn-lg">Details</a>
+                                                        <a href="{{ route('all.jobs.details', $letestJob->id) }}"
+                                                            class="btn btn-primary btn-lg">Details</a>
                                                     </div>
                                                 </div>
                                             </div>
