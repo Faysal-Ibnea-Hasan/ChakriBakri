@@ -42,5 +42,8 @@ Route::group(['account'], function () {
         Route::post('/account/save_job', [UserController::class, 'saveJob'])->name('account.save.job');
         Route::post('/account/update/profile-pic', [UserController::class, 'updateProfilePic'])->name('account.profile-pic.update');
         Route::get('/account/logout', [UserController::class, 'userLogout'])->name('account.logout');
+        Route::get('/account/my_job_application', [UserController::class, 'myJobApplication'])->name('account.myJobApplication');
+        Route::post('/account/my_job_application/remove', [UserController::class, 'removeMyJob'])->name('account.removeMyJob');
+
     });
 });

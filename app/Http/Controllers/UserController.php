@@ -7,6 +7,7 @@ use App\Models\Catagory;
 use App\Models\Job;
 use App\Models\JobType;
 use App\Models\User;
+use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -331,7 +332,7 @@ class UserController extends Controller
     public function myJob()
     {
         // Retrieve the logged-in user's job posts with associated job types, paginated by 5
-        $jobs = Job::where('user_id', Auth::user()->id)->with('jobType')->orderBy('created_at','DESC')->paginate(5);
+        $jobs = Job::where('user_id', Auth::user()->id)->with('jobType')->orderBy('created_at', 'DESC')->paginate(5);
 
         // Return the view with the user's job posts
         return view('front.job_s.my_job', [
@@ -426,16 +427,47 @@ class UserController extends Controller
             'id' => $request->jobId
         ])->first();
         if ($job == null) {
-            Session::flash('error','An error occured!');
+            Session::flash('error', 'An error occured!');
             return response()->json([
-                'status'=>true
+                'status' => true
             ]);
         }
 
-        Job::where('id',$request->jobId)->delete();
-        Session::flash('success','Job deleted successfully!');
+        Job::where('id', $request->jobId)->delete();
+        Session::flash('success', 'Job deleted successfully!');
         return response()->json([
             'status' => true
+        ]);
+    }
+
+    public function myJobApplication()
+    {
+        $jobApplications = JobApplication::where([
+            'user_id' => Auth::user()->id
+        ])->with('job', 'job.jobType', 'job.application')->paginate(10);
+        //dd($jobApplications);
+
+        return view('front.job_s.my_job_application', [
+            'jobApplications' => $jobApplications
+        ]);
+    }
+
+    public function removeMyJob(Request $request)
+    {
+        $jobApplication = JobApplication::where([
+            'id' => $request->id,
+            'user_id' => Auth::user()->id,
+        ])->first();
+        if ($jobApplication == null) {
+            session::flash('error', 'Job application not found!');
+            return response()->json([
+                'status' => false,
+            ]);
+        }
+        JobApplication::find($request->id)->delete();
+        session::flash('success', 'Job application removed successfully.');
+        return response()->json([
+            'status' => true,
         ]);
     }
 }
